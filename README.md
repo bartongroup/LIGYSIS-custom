@@ -2,6 +2,8 @@
 
 This repository contains a customised version of our original ligand site analysis [**LIGYSIS**](https://github.com/JavierSanchez-Utges/LIGYSIS) pipeline, which was employed to analyse all biologically relevant protien-ligand interactions on the [PDBe](https://www.ebi.ac.uk/pdbe/) [[1](https://europepmc.org/article/MED/31691821)], which results are served in the **LIGYSIS** [web server](https://www.compbio.dundee.ac.uk/ligysis/). The code for the web server can be found [here](https://github.com/JavierSanchez-Utges/LIGYSIS-web).
 
+[![DOI](https://zenodo.org/badge/687041257.svg)](https://doi.org/10.5281/zenodo.14178215)
+
 This customised version of **LIGYSIS** does not rely on the [PDBe-KB](https://www.ebi.ac.uk/pdbe/pdbe-kb/) [[2](https://academic.oup.com/nar/article/48/D1/D344/5580911)] and PDBe [APIs](https://www.ebi.ac.uk/pdbe/pdbe-rest-api) [[3](https://academic.oup.com/bioinformatics/article/37/21/3950/6291664)], but instead processes from scratch any set of structures in <i>.pdb</i> or <i>.cif</i> formats, and is employed to process user jobs in the [LIGYSIS web server](https://www.compbio.dundee.ac.uk/ligysis/).
 
 ## Pipeline methodology
