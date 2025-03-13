@@ -1284,39 +1284,45 @@ def main(args):
     log.info("Number of domains: {}".format(str(n_domains)))
     matrix_file = "{}.{}".format(prefix, str(n_domains-1))
     last_matrix_path = os.path.join(stamp_out_dir, matrix_file)
-
-    if os.path.isfile(last_matrix_path):
-        log.debug("STAMP matrix files already exist")
-        pass
-    else:
-        cmd, ec = stamp(
-            domains_out,
-            prefix, os.path.join(results_dir, "{}.out".format(prefix))
-        )
-        if ec == 0:
-            log.info("STAMP matrix files generated")
-        else:
-            log.critical("STAMP failed with {}".format(cmd))
-        
     fnames = fnames_from_domains(domains_out) # these thould be stamped files, so with .supp
 
-    c = 0 # counting the number of superposed pdbs
-    for file in fnames:
-        if os.path.isfile(os.path.join(supp_pdbs_dir, file)): # only when they alaready have been transformed
-            c += 1
-    if c == n_domains:
-        log.debug("All structure domains already are superposed")
-        pass
+    ### DO NOT RUN STAMP IF INPUT IS A SINGLE CHAIN ###
+    #print(os.listdir(clean_pdbs_dir))
+    if n_domains == 1: # single structure
+        #pass
+        clean_file = os.listdir(clean_pdbs_dir)[0]
+        shutil.move(os.path.join(clean_pdbs_dir, clean_file), os.path.join(wd, fnames[0])) # just copy clean pdb and change name
     else:
-        if not os.path.isfile(matrix_file): # RUNNING TRANSFORM ONCE STAMP OUTPUT HAS BEEN MOVED TO STAMP_OUT_DIR
-            matrix_file = os.path.join(stamp_out_dir, matrix_file) # needs to change to accommodate for how many domains in .domains file 
-        cmd, ec = transform(matrix_file) #running transform with matrix on cwd
-        if ec == 0:
-            log.info("Structures transformed")
+        if os.path.isfile(last_matrix_path):
+            log.debug("STAMP matrix files already exist")
+            pass
         else:
-            log.critical("TRANSFORM failed with {}".format(cmd))
-    
-    log.info("STAMP and TRANSFORM completed")
+            cmd, ec = stamp(
+                domains_out,
+                prefix, os.path.join(results_dir, "{}.out".format(prefix))
+            )
+            if ec == 0:
+                log.info("STAMP matrix files generated")
+            else:
+                log.critical("STAMP failed with {}".format(cmd))
+            
+            c = 0 # counting the number of superposed pdbs
+            for file in fnames:
+                if os.path.isfile(os.path.join(supp_pdbs_dir, file)): # only when they alaready have been transformed
+                    c += 1
+            if c == n_domains:
+                log.debug("All structure domains already are superposed")
+                pass
+            else:
+                if not os.path.isfile(matrix_file): # RUNNING TRANSFORM ONCE STAMP OUTPUT HAS BEEN MOVED TO STAMP_OUT_DIR
+                    matrix_file = os.path.join(stamp_out_dir, matrix_file) # needs to change to accommodate for how many domains in .domains file 
+                cmd, ec = transform(matrix_file) #running transform with matrix on cwd
+                if ec == 0:
+                    log.info("Structures transformed")
+                else:
+                    log.critical("TRANSFORM failed with {}".format(cmd))
+            
+            log.info("STAMP and TRANSFORM completed")
     
     move_supp_files(fnames, supp_pdbs_dir, wd)
 
